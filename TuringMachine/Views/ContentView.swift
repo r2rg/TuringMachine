@@ -14,10 +14,16 @@ struct ContentView: View {
     var body: some View {
         
         VStack {
-            TapeView(tape: [1: "1", 2: "0", 3: "1", 4: "_", 5: "_"], headIndex: 2)
+            TapeView(tape: viewModel.tapeDisplay, headIndex: viewModel.machine.tape.index)
             
             StateTableView(viewModel: viewModel)
             
+            Button("Step") {
+                viewModel.step()
+            }
+            .alert("Halted", isPresented: $viewModel.showingAlert) {
+                Button("OK", role: .cancel) { }
+            }
         }
         .frame(width: 500,
                height: 300)

@@ -11,30 +11,33 @@ struct StateTableView: View {
     @ObservedObject var viewModel: TuringMachineViewModel
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Transition Rules")
-                .font(.headline)
-            
-            List {
-                ForEach(viewModel.machine.transitionRules) { rule in
-                    HStack {
-                        Text("δ( \(rule.currentState), \(rule.readSymbol) )")
-                        Spacer()
-
-                        Text("= (\(rule.writeSymbol), \(rule.direction == .left ? "L" : rule.direction == .right ? "R" : "S"), \(rule.nextState))")
+        NavigationStack {
+            VStack(alignment: .center, spacing: 0) {
+                Text("Transition Rules")
+                    .font(.headline)
+                    .padding(6)
+                
+                List {
+                    ForEach(viewModel.machine.transitionRules, id: \.id) { rule in
+                        HStack {
+                            Text("δ( \(rule.currentState), \(rule.readSymbol) )")
+                            Spacer()
+                            
+                            Text("= (\(rule.writeSymbol), \(rule.direction == .left ? "L" : rule.direction == .right ? "R" : "S"), \(rule.nextState))")
+                        }
+                    }
+                    
+                    NavigationLink(destination: NewRuleFormView(viewModel: viewModel)) {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add Transition Rule")
+                        }
                     }
                 }
+                .padding(.top, 5)
             }
-            
-            Button("Add Dummy Rule") {
-                let newRule = TransitionRule(currentState: "q1",
-                                             nextState: "q2",
-                                             readSymbol: "_",
-                                             writeSymbol: "1",
-                                             direction: .right)
-                viewModel.addTransition(rule: newRule)
-            }
-            .padding(.top, 5)
+            .background(Color.gray)
+            .cornerRadius(6)
         }
     }
 }

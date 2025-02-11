@@ -1,7 +1,8 @@
 import Foundation
 
-enum Direction {
+enum Direction: String, CaseIterable, Identifiable {
     case left, right, stay
+    var id: Self { self }
 }
 
 struct TransitionRule: Identifiable {

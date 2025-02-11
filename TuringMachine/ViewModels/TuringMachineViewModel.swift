@@ -4,6 +4,7 @@ import Combine
 class TuringMachineViewModel: ObservableObject {
     @Published private(set) var machine: TuringMachine
     @Published var tapeDisplay: [Int : String] = [:]
+    @Published var showingAlert = false
     
     init(machine: TuringMachine) {
         self.machine = machine
@@ -15,7 +16,8 @@ class TuringMachineViewModel: ObservableObject {
             updateTapeDisplay()
         }
         else {
-            print("Halted")
+            showingAlert = true
+            print("Halted, \(machine.state), \(machine.tape)")
         }
     }
     
