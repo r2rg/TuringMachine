@@ -12,21 +12,40 @@ struct ContentView: View {
     @ObservedObject var viewModel: TuringMachineViewModel
     
     var body: some View {
-        
         VStack {
-            TapeView(tape: viewModel.tapeDisplay, headIndex: viewModel.machine.tape.index)
+            TapeView(tape: viewModel.tapeDisplay,
+                     state: viewModel.machine.state,
+                     headIndex: viewModel.machine.tape.index)
+                .padding(30)
             
             StateTableView(viewModel: viewModel)
+                .aspectRatio(contentMode: .fill)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
             
-            Button("Step") {
-                viewModel.step()
-            }
-            .alert("Halted", isPresented: $viewModel.showingAlert) {
-                Button("OK", role: .cancel) { }
+            HStack {
+                Button("Step") {
+                    Task{
+                        await viewModel.step()
+                    }
+                }
+                .alert("Halted", isPresented: $viewModel.showingAlert) {
+                    Button("OK", role: .cancel) { }
+                }
+                .padding()
+                
+                Button(!viewModel.running ? "Run" : "Stop") {
+                    viewModel.running.toggle()
+                    
+                    Task {
+                        await viewModel.run(speed: 2)
+                    }
+                }
+                .alert("Halted", isPresented: $viewModel.showingAlert) {
+                    Button("OK", role: .cancel) { }
+                }
+                .padding()
             }
         }
-        .frame(width: 500,
-               height: 300)
         .padding()
     }
 }

@@ -37,7 +37,6 @@ struct StateTableView: View {
                 .padding(.top, 5)
             }
             .background(Color.gray)
-            .cornerRadius(6)
         }
     }
 }
