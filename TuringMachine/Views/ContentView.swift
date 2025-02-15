@@ -13,10 +13,15 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            TapeView(tape: viewModel.tapeDisplay,
-                     state: viewModel.machine.state,
-                     headIndex: viewModel.machine.tape.index)
-                .padding(30)
+            TapeView(
+                tape: viewModel.tapeDisplay,
+                state: viewModel.machine.state,
+                headIndex: viewModel.machine.tape.index,
+                onCommit: { index, newValue in
+                    viewModel.updateTapeCell(at: index, with: newValue)
+                }
+            )
+            .padding(30)
             
             StateTableView(viewModel: viewModel)
                 .aspectRatio(contentMode: .fill)

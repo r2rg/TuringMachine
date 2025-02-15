@@ -40,10 +40,22 @@ class TuringMachineViewModel: ObservableObject {
         tapeDisplay = machine.tape.cells
     }
     
+    func updateTapeCell(at index: Int, with newValue: String) {
+        machine.tape.cells[index] = newValue
+        updateTapeDisplay()
+    }
+
+    
     func addTransition(rule: TransitionRule) {
         machine.transitionRules.removeAll {
             $0.currentState == rule.currentState && $0.readSymbol == rule.readSymbol
         }
         machine.transitionRules.append(rule)
+    }
+    
+    func removeTransitionRule(at offsets: IndexSet) {
+        var transitionRules = machine.transitionRules
+        transitionRules.remove(atOffsets: offsets)
+        machine.transitionRules = transitionRules
     }
 }

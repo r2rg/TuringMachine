@@ -13,7 +13,9 @@ struct TapeView: View {
     let state: String
     let headIndex: Int
     let visibleRange: Int = 10
-        
+    
+    let onCommit: (Int, String) -> Void
+    
     private var minIndex: Int {
         (tape.keys.min() ?? 0) - tape.count + 1 + headIndex - visibleRange
     }
@@ -26,14 +28,12 @@ struct TapeView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 ForEach(minIndex...maxIndex, id: \.self) { index in
-                    Text(tape[index, default: "_|"])
-                        .frame(width: 65, height: 40)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(colorScheme == .dark ? .white : .black, lineWidth: 2)
-                        }
-                        .background(colorScheme == .dark ? .black : .white)
-                        .accessibilityLabel("\(index)")
+                    EditableTapeCell(
+                        index: index,
+                        initialValue: tape[index, default: "_|"],
+                        onCommit: onCommit
+                    )
+                    .accessibilityLabel("\(index)")
                 }
             }
             .animation(.easeInOut(duration: 0.1), value: state)
@@ -52,6 +52,3 @@ struct TapeView: View {
     }
 }
 
-#Preview {
-    TapeView(tape: [0: "1", 1: "0", 2: "1", 3: "_", 4: "_"], state: "q1", headIndex: 0)
-}

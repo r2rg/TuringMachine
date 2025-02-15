@@ -18,12 +18,16 @@ struct StateTableView: View {
                     .padding(6)
                 
                 List {
-                    ForEach(viewModel.machine.transitionRules, id: \.id) { rule in
+                    ForEach(Array(viewModel.machine.transitionRules.enumerated()), id: \.element.id) { index, rule in
                         HStack {
                             Text("δ( \(rule.currentState), \(rule.readSymbol) )")
                             Spacer()
-                            
                             Text("= (\(rule.writeSymbol), \(rule.direction == .left ? "L" : rule.direction == .right ? "R" : "S"), \(rule.nextState))")
+                        }
+                        .contextMenu {
+                            Button("Delete") {
+                                viewModel.removeTransitionRule(at: IndexSet(integer: index))
+                            }
                         }
                     }
                     
@@ -34,6 +38,7 @@ struct StateTableView: View {
                         }
                     }
                 }
+
                 .padding(.top, 5)
             }
             .background(Color.gray)
