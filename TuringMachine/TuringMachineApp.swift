@@ -9,16 +9,59 @@ import SwiftUI
 
 @main
 struct TuringMachineApp: App {
+    @StateObject private var viewModel: TuringMachineViewModel = {
+        let initialTape = Tape(cells: [:])
+        let dummyRules = [TransitionRule]()
+        let dummyMachine = TuringMachine(tape: initialTape, state: "q0", transitionRules: dummyRules)
+        return TuringMachineViewModel(machine: dummyMachine)
+    }()
+    
     var body: some Scene {
         WindowGroup {
-            let initialTape = Tape(cells: [0: "1", 1: "0", 2: "1", 3: "_", 4: "_"])
-            let dummyRules = [
-                TransitionRule(currentState: "q0", nextState: "q1", readSymbol: "1", writeSymbol: "0", direction: .right)
-            ]
-            let dummyMachine = TuringMachine(tape: initialTape, state: "q0", transitionRules: dummyRules)
-            let viewModel = TuringMachineViewModel(machine: dummyMachine)
-            
             ContentView(viewModel: viewModel)
+        }
+        .commands {
+            CommandGroup(replacing: CommandGroupPlacement.saveItem) {
+                Button("Save machine") {
+                    StorageManager.shared.promptUserForSaveLocation { saveURL in
+                        if let url = saveURL {
+                            do {
+                                try StorageManager.shared.saveMachine(viewModel.machine, to: url)
+                                print("Program saved successfully.")
+                            } catch {
+                                print("Error saving program: \(error)")
+                            }
+                        }
+                    }
+                }
+                .keyboardShortcut("S", modifiers: [.command])
+            }
+            
+            CommandGroup(after: CommandGroupPlacement.saveItem) {
+                Button("Load machine") {
+                    StorageManager.shared.promptUserForLoadLocation { fileURL in
+                        guard let fileURL = fileURL else {
+                            print("User cancelled load.")
+                            return
+                        }
+                        
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            do {
+                                let loadedMachine = try StorageManager.shared.loadMachine(from: fileURL)
+                                DispatchQueue.main.async {
+                                    viewModel.updateMachine(loadedMachine)
+                                    print("Program loaded successfully from \(fileURL.path)")
+                                }
+                            } catch {
+                                DispatchQueue.main.async {
+                                    print("Error loading program: \(error)")
+                                }
+                            }
+                        }
+                    }
+                }
+                .keyboardShortcut("O", modifiers: [.command])
+            }
         }
     }
 }

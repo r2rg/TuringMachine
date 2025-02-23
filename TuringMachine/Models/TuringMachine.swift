@@ -1,6 +1,6 @@
 import Foundation
 
-struct TuringMachine {
+struct TuringMachine: Codable {
     var tape: Tape
     var state: String
     var transitionRules: [TransitionRule]

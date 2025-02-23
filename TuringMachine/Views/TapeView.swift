@@ -28,10 +28,13 @@ struct TapeView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 ForEach(minIndex...maxIndex, id: \.self) { index in
+                    let binding = Binding<String>(
+                        get: { tape[index, default: "_"] },
+                        set: { newValue in onCommit(index, newValue) }
+                    )
                     EditableTapeCell(
                         index: index,
-                        initialValue: tape[index, default: "_|"],
-                        onCommit: onCommit
+                        cellValue: binding
                     )
                     .accessibilityLabel("\(index)")
                 }

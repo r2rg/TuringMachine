@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class TuringMachineViewModel: ObservableObject {
     @Published private(set) var machine: TuringMachine
     @Published var tapeDisplay: [Int : String] = [:]
@@ -19,11 +20,11 @@ class TuringMachineViewModel: ObservableObject {
         else {
             showingAlert = true
             running = false
-            print("Halted, \(machine.state), \(machine.tape)")
+            print("Halted, \(machine.state), \(machine.tape), \n \(tapeDisplay)")
         }
     }
     
-    func run(speed: UInt64) async { // TODO: Make async so it actually works
+    func run(speed: UInt64) async { 
         while running {
             await step()
             try? await Task.sleep(nanoseconds: 1_000_000_000 / speed)
@@ -41,11 +42,17 @@ class TuringMachineViewModel: ObservableObject {
     }
     
     func updateTapeCell(at index: Int, with newValue: String) {
-        machine.tape.cells[index] = newValue
+        if newValue == "_" {
+            machine.tape.cells.removeValue(forKey: index)
+        }
+        else {
+            machine.tape.cells[index] = newValue
+        }
+        
         updateTapeDisplay()
+            
     }
 
-    
     func addTransition(rule: TransitionRule) {
         machine.transitionRules.removeAll {
             $0.currentState == rule.currentState && $0.readSymbol == rule.readSymbol
@@ -58,4 +65,10 @@ class TuringMachineViewModel: ObservableObject {
         transitionRules.remove(atOffsets: offsets)
         machine.transitionRules = transitionRules
     }
+    
+    func updateMachine(_ newMachine: TuringMachine) {
+        self.machine = newMachine
+        updateTapeDisplay()
+    }
+    
 }

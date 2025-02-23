@@ -56,7 +56,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    let initialTape = Tape(cells: [0: "1", 1: "0", 2: "1", 3: "_", 4: "_"])
+    let initialTape = Tape(cells: [0: "1", 1: "0", 2: "1", 3: "1", 4: "0"])
     let dummyRules = [
         TransitionRule(currentState: "q0", nextState: "q1", readSymbol: "1", writeSymbol: "0", direction: .right)
     ]

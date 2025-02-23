@@ -1,7 +1,7 @@
 import Foundation
 
-struct Tape {
-    var cells: [Int : String] // The tape can go both ways infinitely, so we use a dictionary for negative indices 
+struct Tape: Codable {
+    var cells: [Int : String] // The tape can go both ways infinitely, so we use a dictionary for negative indices
     var index = 0
     
     mutating func write(_ symbol: String) {

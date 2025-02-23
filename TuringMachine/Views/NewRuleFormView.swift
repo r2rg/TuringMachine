@@ -5,14 +5,6 @@
 //  Created by Артур Галустян on 11.02.2025.
 //
 
-
-//
-//  NewRuleFormView.swift
-//  TuringMachine
-//
-//  Created by Артур Галустян on 11.02.2025.
-//
-
 import SwiftUI
 
 struct NewRuleFormView: View {
