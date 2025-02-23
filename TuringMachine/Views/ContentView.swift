@@ -28,6 +28,11 @@ struct ContentView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
             
             HStack {
+                Button("Reset") {
+                    viewModel.reset()
+                }
+                .padding()
+                
                 Button("Step") {
                     Task{
                         await viewModel.step()
@@ -50,6 +55,7 @@ struct ContentView: View {
                 }
                 .padding()
             }
+            .padding(.bottom)
         }
         .padding()
     }

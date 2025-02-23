@@ -31,9 +31,9 @@ class TuringMachineViewModel: ObservableObject {
         }
     }
     
-    func reset(with newTape: Tape, state: String) {
-        machine.tape = newTape
-        machine.state = state
+    func reset() {
+        machine.tape = Tape(cells: [:])
+        machine.state = "q0"
         updateTapeDisplay()
     }
     
